@@ -1,0 +1,12 @@
+apache-airflow==2.7.1
+pandas==2.1.4
+sqlalchemy==1.4.50
+psycopg2-binary==2.9.9
+kaggle==1.5.16
+kagglehub==0.3.6
+python-dotenv==1.0.0
+humanize==4.9.0
+psycopg2-binary
+streamlit
+plotly
+pandas

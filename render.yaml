@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: product-analytics-dashboard
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run product_analysis_app/app.py
+    envVars:
+      - key: POSTGRES_HOST
+        sync: false
+      - key: POSTGRES_PORT
+        sync: false
+      - key: POSTGRES_DB
+        sync: false
+      - key: POSTGRES_USER
+        sync: false
+      - key: POSTGRES_PASSWORD
+        sync: false
