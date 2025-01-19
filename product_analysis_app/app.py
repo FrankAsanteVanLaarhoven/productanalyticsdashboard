@@ -29,6 +29,15 @@ VOLUME_RATINGS = {
     'Standard Volume': {'color': '#17a2b8', 'description': 'Regular demand'}
 }
 
+# Update DB_CONFIG with Render PostgreSQL details
+DB_CONFIG = {
+    'user': 'airflow_3prf_user',
+    'password': os.getenv('POSTGRES_PASSWORD'),
+    'host': 'dpg-cu63up5ds78s73agthn0-a.oregon-postgres.render.com',
+    'port': '5432',
+    'database': 'airflow_3prf'
+}
+
 class ProductService:
     @staticmethod
     def get_db_connection():
@@ -42,7 +51,6 @@ class ProductService:
         except Exception as e:
             st.error(f"Database connection error: {e}")
             return None
-
     @staticmethod
     def get_recommendations():
         """Fetch product recommendations from view"""

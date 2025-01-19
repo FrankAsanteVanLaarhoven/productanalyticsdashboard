@@ -8,9 +8,9 @@ APP_CONFIG = {
 }
 
 DB_CONFIG = {
-    "host": os.getenv("POSTGRES_HOST", "postgres"),
-    "port": os.getenv("POSTGRES_PORT", "5432"),
-    "database": os.getenv("POSTGRES_DB", "airflow"),
-    "user": os.getenv("POSTGRES_USER", "airflow"),
-    "password": os.getenv("POSTGRES_PASSWORD", "airflow")
+    'user': os.getenv('POSTGRES_USER', 'airflow_3prf_user'),
+    'password': os.getenv('POSTGRES_PASSWORD'),
+    'host': os.getenv('POSTGRES_HOST', 'dpg-cu63up5ds78s73agthn0-a.oregon-postgres.render.com'),
+    'port': os.getenv('POSTGRES_PORT', '5432'),
+    'database': os.getenv('POSTGRES_DB', 'airflow_3prf')
 }
