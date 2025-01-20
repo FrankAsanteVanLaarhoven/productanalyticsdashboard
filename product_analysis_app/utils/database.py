@@ -1,24 +1,36 @@
 # utils/database.py
-class DatabaseService:
-    @staticmethod
-    @st.cache_data(ttl=300)
-    def get_product_recommendations() -> pd.DataFrame:
-        """Fetch data from the product recommendations view"""
-        try:
-            conn = get_database_connection()
-            query = """
-            SELECT *
-            FROM meap.vw_product_recommendations
-            ORDER BY 
-                CASE price_rating
-                    WHEN 'AAA' THEN 1
-                    WHEN 'AA' THEN 2
-                    WHEN 'A' THEN 3
-                    ELSE 4
-                END,
-                category;
-            """
-            return pd.read_sql_query(query, conn)
-        except Exception as e:
-            st.error(f"Failed to fetch recommendations: {e}")
-            return None
+from sqlalchemy import create_engine, text
+from sqlalchemy.orm import sessionmaker
+import psycopg2
+import pandas as pd
+import os
+
+def get_db_params():
+    """Get database parameters based on environment"""
+    if os.getenv('RENDER'):  # If running on Render
+        return {
+            "host": "dpg-cu63up5ds78s73agthn0-a.oregon-postgres.render.com",
+            "database": "airflow_3prf",
+            "user": "airflow_3prf_user",
+            "password": os.getenv('POSTGRES_PASSWORD'),
+            "sslmode": "require"
+        }
+    else:  # Local Docker environment - matches the quote
+        return {
+            "host": "postgres",
+            "database": "airflow",
+            "user": "airflow",
+            "password": "airflow",
+            "port": "5432"
+        }
+
+def get_postgres_connection():
+    """Get direct psycopg2 connection"""
+    try:
+        conn = psycopg2.connect(**get_db_params())
+        with conn.cursor() as cursor:
+            cursor.execute("SET search_path TO meap, public;")
+        return conn
+    except Exception as e:
+        print(f"Connection error: {str(e)}")
+        raise e

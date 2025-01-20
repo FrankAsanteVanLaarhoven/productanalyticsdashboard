@@ -1,143 +1,205 @@
-# /Users/frankvanlaarhoven/airflow_project/product_analysis_app/config/styles.py
+# config/styles.py
 CUSTOM_STYLES = """
 <style>
-    /* Base styles */
+    /* Apple-inspired Theme Variables */
+    :root {
+        /* Core colors matching view ratings */
+        --aaa-color: #007AFF;  /* Maintain premium pricing - Apple Blue */
+        --aa-color: #5856D6;   /* Consider optimization - Apple Purple */
+        --a-color: #FF9500;    /* Review strategy - Apple Orange */
+        --b-color: #FF3B30;    /* Evaluate position - Apple Red */
+        
+        /* Volume colors matching view cases */
+        --high-volume: #34C759;    /* Maintain inventory - Apple Green */
+        --medium-volume: #FF9F0A;  /* Monitor stock - Apple Yellow */
+        --standard-volume: #64D2FF; /* Review stock - Apple Light Blue */
+        
+        /* Theme colors */
+        --background: #F5F5F7;
+        --card-bg: rgba(255, 255, 255, 0.95);
+        --text: #1D1D1F;
+        --shadow: rgba(0, 0, 0, 0.1);
+    }
+
+    /* Dark Mode - Apple Dark Theme */
+    [data-theme="dark"] {
+        --background: #000000;
+        --card-bg: rgba(28, 28, 30, 0.95);
+        --text: #F5F5F7;
+        --shadow: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Smooth Scrolling */
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* Base Animations */
     * {
-        transition: all 0.3s ease-in-out;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
+    /* Modern App Container */
     .stApp {
-        background: linear-gradient(180deg, #f5f5f7 0%, #fff 100%);
+        background: var(--background);
+        color: var(--text);
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     }
     
-    /* Card styling */
+    /* Glass-morphism Cards */
     .metric-card {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        border-radius: 12px;
+        background: var(--card-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 20px;
         padding: 1.5rem;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        margin: 1rem 0;
+        box-shadow: 0 8px 32px var(--shadow);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transform: translateY(0);
     }
     
-    /* Price Rating Colors - Matching view CASE statements */
-    .price-rating-AAA {
-        background-color: #28a745;  /* Maintain premium pricing */
-        color: white;
+    .metric-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px var(--shadow);
     }
-    
-    .price-rating-AA {
-        background-color: #17a2b8;  /* Consider price optimization */
-        color: white;
-    }
-    
-    .price-rating-A {
-        background-color: #ffc107;  /* Review pricing strategy */
-        color: black;
-    }
-    
-    .price-rating-B {
-        background-color: #dc3545;  /* Evaluate market position */
-        color: white;
-    }
-    
-    /* Volume Rating Colors - Matching view CASE statements */
-    .volume-high {
-        background-color: #28a745;  /* Maintain inventory levels */
-        color: white;
-    }
-    
-    .volume-medium {
-        background-color: #ffc107;  /* Monitor stock levels */
-        color: black;
-    }
-    
-    .volume-standard {
-        background-color: #17a2b8;  /* Review stock strategy */
-        color: white;
-    }
-    
-    /* Strategy badges */
-    .strategy-badge {
-        padding: 0.5rem 1rem;
-        border-radius: 6px;
-        font-weight: 500;
-        font-size: 0.875rem;
-        display: inline-block;
-        margin: 0.25rem 0;
-    }
-    
-    /* Metrics styling */
-    .metric-container {
-        padding: 1rem;
-        border-radius: 8px;
-        background: white;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    }
-    
-    .metric-value {
-        font-size: 1.75rem;
+
+    /* Interactive Rating Badges - Matching view CASE logic */
+    .rating-badge {
+        padding: 0.6rem 1.2rem;
+        border-radius: 20px;
         font-weight: 600;
-        color: #1a1a1a;
+        text-align: center;
+        margin: 0.25rem;
+        animation: badgeSlide 0.5s ease-out;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
     }
     
-    .metric-label {
-        font-size: 0.875rem;
-        color: #666;
-        margin-top: 0.25rem;
+    .rating-badge:hover {
+        transform: scale(1.05);
+        filter: brightness(1.1);
     }
     
-    /* Table enhancements */
+    /* Rating Colors - Matching view cases exactly */
+    .price-AAA { background: var(--aaa-color); color: white; }
+    .price-AA { background: var(--aa-color); color: white; }
+    .price-A { background: var(--a-color); color: white; }
+    .price-B { background: var(--b-color); color: white; }
+
+    /* Volume Badges - Matching view cases */
+    .volume-high { background: var(--high-volume); color: white; }
+    .volume-medium { background: var(--medium-volume); color: white; }
+    .volume-standard { background: var(--standard-volume); color: white; }
+
+    /* Modern Data Table */
     .dataframe {
         border: none !important;
-        border-radius: 8px;
+        border-radius: 20px;
         overflow: hidden;
+        animation: tableSlide 0.5s ease-out;
+        background: var(--card-bg);
+        width: 100%;
     }
     
-    .dataframe th {
-        background-color: #f8f9fa;
+    .dataframe thead th {
+        background: var(--card-bg);
+        padding: 1rem !important;
         font-weight: 600;
-        padding: 0.75rem 1rem !important;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        border-bottom: 2px solid var(--shadow);
     }
     
-    .dataframe td {
-        padding: 0.75rem 1rem !important;
+    .dataframe tbody tr {
+        transition: all 0.2s ease;
     }
     
-    /* Chart container */
-    .chart-container {
-        background: white;
-        border-radius: 12px;
-        padding: 1rem;
+    .dataframe tbody tr:hover {
+        background: var(--shadow);
+        transform: scale(1.01);
+    }
+
+    /* Infinite Scroll Container */
+    .scroll-container {
+        max-height: 80vh;
+        overflow-y: auto;
+        padding-right: 1rem;
+        scrollbar-width: thin;
+        scrollbar-color: var(--shadow) transparent;
+    }
+
+    /* Custom Scrollbar */
+    .scroll-container::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .scroll-container::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    
+    .scroll-container::-webkit-scrollbar-thumb {
+        background: var(--shadow);
+        border-radius: 3px;
+    }
+
+    /* Advanced Animations */
+    @keyframes badgeSlide {
+        from { transform: translateX(-20px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes tableSlide {
+        from { transform: translateY(20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Mobile Optimizations */
+    @media (max-width: 768px) {
+        .metric-card {
+            padding: 1rem;
+            margin: 0.5rem 0;
+        }
+        
+        .rating-badge {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.875rem;
+        }
+        
+        .dataframe {
+            font-size: 0.875rem;
+        }
+        
+        .scroll-container {
+            max-height: 60vh;
+        }
+    }
+
+    /* Navigation Menu */
+    .nav-menu {
+        background: var(--card-bg);
+        border-radius: 20px;
+        padding: 0.5rem;
         margin: 1rem 0;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        display: flex;
+        gap: 0.5rem;
+        overflow-x: auto;
+        scrollbar-width: none;
     }
     
-    /* Strategy recommendations */
-    .recommendation {
-        padding: 1rem;
-        border-radius: 8px;
-        margin: 0.5rem 0;
+    .nav-item {
+        padding: 0.75rem 1.5rem;
+        border-radius: 15px;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.3s ease;
     }
     
-    .recommendation-premium {
-        background-color: rgba(40, 167, 69, 0.1);
-        border-left: 4px solid #28a745;
-    }
-    
-    .recommendation-optimize {
-        background-color: rgba(23, 162, 184, 0.1);
-        border-left: 4px solid #17a2b8;
-    }
-    
-    .recommendation-review {
-        background-color: rgba(255, 193, 7, 0.1);
-        border-left: 4px solid #ffc107;
-    }
-    
-    .recommendation-evaluate {
-        background-color: rgba(220, 53, 69, 0.1);
-        border-left: 4px solid #dc3545;
+    .nav-item:hover, .nav-item.active {
+        background: var(--aaa-color);
+        color: white;
     }
 </style>
 """
