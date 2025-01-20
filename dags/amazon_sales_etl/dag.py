@@ -80,9 +80,6 @@ SELECT
     END as volume_rating
 FROM meap.sales_data;
 """
-
-# In your dag.py, update the CREATE_RECOMMENDATIONS_VIEW_SQL:
-
 CREATE_RECOMMENDATIONS_VIEW_SQL = """
 CREATE OR REPLACE VIEW meap.vw_product_recommendations AS
 SELECT 

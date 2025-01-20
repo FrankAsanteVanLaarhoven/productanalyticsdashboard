@@ -1,0 +1,42 @@
+# test_db.py
+import psycopg2
+import pandas as pd
+
+def test_db():
+    try:
+        # Use same connection as in the quote
+        conn = psycopg2.connect(
+            host="postgres",
+            database="airflow",
+            user="airflow",
+            password="airflow",
+            port="5432"
+        )
+        
+        query = """
+        SELECT 
+            p.*,
+            CASE price_rating
+                WHEN 'AAA' THEN 'Maintain premium pricing'
+                WHEN 'AA' THEN 'Consider price optimization'
+                WHEN 'A' THEN 'Review pricing strategy'
+                ELSE 'Evaluate market position'
+            END as price_strategy,
+            CASE volume_rating
+                WHEN 'High Volume' THEN 'Maintain inventory levels'
+                WHEN 'Medium Volume' THEN 'Monitor stock levels'
+                ELSE 'Review stock strategy'
+            END as volume_strategy
+        FROM meap.vw_product_ratings p;
+        """
+        
+        df = pd.read_sql(query, conn)
+        print("Data fetched successfully!")
+        print("\nSample data:")
+        print(df.head())
+        
+    except Exception as e:
+        print(f"Error: {str(e)}")
+
+if __name__ == "__main__":
+    test_db()

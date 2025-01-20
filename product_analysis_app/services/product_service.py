@@ -4,13 +4,11 @@ import streamlit as st
 from sqlalchemy import create_engine, text
 import os
 from datetime import datetime
-from typing import List, Optional
 
 class ProductService:
     """Service to interact with product recommendations view"""
     
-    # Update paths to match Docker container structure
-    DATA_PATH = '/app/data'  # Updated path
+    DATA_PATH = '/app/data'
     DATA_FILES = {
         "Amazon Sales": "Amazon Sale Report.csv",
         "International Sales": "International sale Report.csv",
@@ -34,7 +32,6 @@ class ProductService:
     def get_recommendations(source_type: str = "Database View") -> pd.DataFrame:
         """Get recommendations from view"""
         try:
-            # Connect to database and query the view directly
             conn_string = (
                 f"postgresql://{ProductService.DB_CONFIG['user']}:"
                 f"{ProductService.DB_CONFIG['password']}@"
@@ -46,11 +43,8 @@ class ProductService:
             engine = create_engine(conn_string)
             
             with engine.connect() as conn:
-                # Set schema and query the view
                 conn.execute(text(f"SET search_path TO {ProductService.DB_CONFIG['schema']}, public;"))
-                query = """
-                SELECT * FROM meap.vw_product_recommendations;
-                """
+                query = "SELECT * FROM meap.vw_product_recommendations;"
                 
                 df = pd.read_sql(text(query), conn)
                 
@@ -94,11 +88,9 @@ class ProductService:
                 st.error(f"File not found: {file_path}")
                 return pd.DataFrame()
             
-            # Load the CSV file
             df = pd.read_csv(file_path)
-            st.write("Original columns:", df.columns.tolist())  # Debug info
+            st.write("Original columns:", df.columns.tolist())
             
-            # Map common column names
             column_mappings = {
                 'Category': 'category',
                 'Product Category': 'category',
@@ -108,18 +100,15 @@ class ProductService:
                 'Units': 'total_units'
             }
             
-            # Rename columns if they exist
             for old_col, new_col in column_mappings.items():
                 if old_col in df.columns:
                     df[new_col] = df[old_col]
             
-            # Group by category
             df_grouped = df.groupby('category').agg({
                 'avg_price': 'mean',
                 'total_units': 'sum'
             }).reset_index()
             
-            # Add ratings matching view exactly
             df_grouped['price_rating'] = pd.cut(
                 df_grouped['avg_price'],
                 bins=[-float('inf'), 30, 50, 70, float('inf')],
@@ -132,7 +121,6 @@ class ProductService:
                 labels=['Standard Volume', 'Medium Volume', 'High Volume']
             )
             
-            # Add strategies using exact view logic
             df_grouped['price_strategy'] = df_grouped['price_rating'].map({
                 'AAA': 'Maintain premium pricing',
                 'AA': 'Consider price optimization',
@@ -154,24 +142,3 @@ class ProductService:
         except Exception as e:
             st.error(f"Error loading file: {str(e)}")
             return pd.DataFrame()
-
-    @staticmethod
-    def test_connection() -> bool:
-        """Test database connection"""
-        try:
-            conn_string = (
-                f"postgresql://{ProductService.DB_CONFIG['user']}:"
-                f"{ProductService.DB_CONFIG['password']}@"
-                f"{ProductService.DB_CONFIG['host']}:"
-                f"{ProductService.DB_CONFIG['port']}/"
-                f"{ProductService.DB_CONFIG['database']}"
-            )
-            
-            engine = create_engine(conn_string)
-            with engine.connect() as conn:
-                conn.execute(text("SELECT 1"))
-                st.success("Database connection successful")
-            return True
-        except Exception as e:
-            st.error(f"Database connection failed: {str(e)}")
-            return False

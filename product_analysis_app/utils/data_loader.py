@@ -1,34 +1,32 @@
-# utils/data_loader.py
-import pandas as pd
-import streamlit as st
-from services.product_service import ProductService
+# product_analysis_app/utils/data_loader.py
 
-class DataLoader:
-    """Data loader that handles both database and CSV sources"""
-    
-    @staticmethod
-    def load_data(source="database"):
-        """Load data from either database or CSV files"""
-        if source == "database":
-            service = ProductService()
-            return service.get_recommendations()
-        elif source == "csv":
-            try:
-                # Load and combine relevant CSV files
-                amazon_df = pd.read_csv("data/Amazon Sale Report.csv")
-                sales_df = pd.read_csv("data/Sale Report.csv")
-                international_df = pd.read_csv("data/International sale Report.csv")
-                
-                # Process and transform data to match the view structure
-                combined_df = DataLoader._process_sales_data(
-                    amazon_df, 
-                    sales_df, 
-                    international_df
-                )
-                return combined_df
-            except Exception as e:
-                st.error(f"Error loading CSV files: {str(e)}")
-                return None
+import pandas as pd
+import os
+import streamlit as st
+
+def load_csv(file_path: str) -> pd.DataFrame:
+    """Load a CSV file into a DataFrame."""
+    try:
+        if not os.path.exists(file_path):
+            st.error(f"File not found: {file_path}")
+            return pd.DataFrame()
+        
+        df = pd.read_csv(file_path)
+        st.success(f"Loaded data from {file_path}")
+        return df
+    except Exception as e:
+        st.error(f"Error loading CSV: {str(e)}")
+        return pd.DataFrame()
+
+def list_files(directory: str) -> list:
+    """List all files in a directory."""
+    try:
+        files = os.listdir(directory)
+        st.write(f"Files in {directory}: {files}")
+        return files
+    except Exception as e:
+        st.error(f"Error listing files: {str(e)}")
+        return []
 
     @staticmethod
     def _process_sales_data(amazon_df, sales_df, international_df):
